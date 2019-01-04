@@ -31,6 +31,8 @@ func GenerateCertificates(config Configuration) error {
 func issueCertificate(config Certificate, caCert *x509.Certificate, caKey interface{}) error {
 	fmt.Printf("Generating certificate for: %v\n", config.CommonName)
 
+	isCA := caCert == nil || config.Issue == nil || len(config.Issue) > 0
+
 	// Create private key
 	privateKey, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
@@ -79,10 +81,10 @@ func issueCertificate(config Certificate, caCert *x509.Certificate, caKey interf
 		}
 	}
 
-	// if *isCA {
-	// 	template.IsCA = true
-	// 	template.KeyUsage |= x509.KeyUsageCertSign
-	// }
+	if isCA {
+		template.IsCA = true
+		template.KeyUsage |= x509.KeyUsageCertSign
+	}
 
 	// If no CA is provided, then self sign
 	if caCert == nil {
