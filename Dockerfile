@@ -12,4 +12,4 @@ RUN cd /src && go build -o cert-gen
 FROM alpine
 WORKDIR /app
 COPY --from=builder /src/cert-gen /app/
-ENTRYPOINT ./cert-gen
+ENTRYPOINT /app/cert-gen
